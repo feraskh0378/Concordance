@@ -7,38 +7,99 @@
     <!-- Home servlet -->
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
-        <servlet-class>com.concordance.Home.HomeServlet</servlet-class>
+        <servlet-class>com.concordance.controller.HomeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
     </servlet-mapping>
     
-    <!-- Tabs servlet -->
-    <servlet>
-        <servlet-name>DocumentsServlet</servlet-name>
-        <servlet-class>com.concordance.Tabs.DocumentsServlet</servlet-class>
+      <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>com.concordance.controller.UploadServlet</servlet-class>
+           <multipart-config>
+        <location>/tmp</location>
+        <max-file-size>10485760</max-file-size>        <!-- 10MB -->
+        <max-request-size>20971520</max-request-size>  <!-- 20MB -->
+        <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
     </servlet>
     <servlet-mapping>
-        <servlet-name>DocumentsServlet</servlet-name>
-        <url-pattern>/DocumentsTable</url-pattern>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/Upload</url-pattern>
     </servlet-mapping>
     
-     <servlet>
-        <servlet-name>WordsServlet</servlet-name>
-        <servlet-class>com.concordance.Tabs.WordsServlet</servlet-class>
+    <!-- Tabs servlet -->
+    <servlet>
+        <servlet-name>GetSongsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetSongsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>WordsServlet</servlet-name>
-        <url-pattern>/WordsTable</url-pattern>
+        <servlet-name>GetSongsServlet</servlet-name>
+        <url-pattern>/GetSongs</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>FilterSongsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterSongsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FilterSongsServlet</servlet-name>
+        <url-pattern>/FilterSongs</url-pattern>
+    </servlet-mapping>
+    
+    
+    
+     <servlet>
+        <servlet-name>GetWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetWordsServlet</servlet-name>
+        <url-pattern>/GetWords</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>FilterWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FilterWordsServlet</servlet-name>
+        <url-pattern>/FilterWords</url-pattern>
+    </servlet-mapping>
+    
+      <servlet>
+        <servlet-name>GetWordSongsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetWordSongsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetWordSongsServlet</servlet-name>
+        <url-pattern>/GetWordSongs</url-pattern>
     </servlet-mapping>
      <servlet>
-        <servlet-name>DBWordsServlet</servlet-name>
-        <servlet-class>com.concordance.Tabs.DBWordsServlet</servlet-class>
+        <servlet-name>FilterWordSongsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterWordSongsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>DBWordsServlet</servlet-name>
-        <url-pattern>/DBWordsTable</url-pattern>
+        <servlet-name>FilterWordSongsServlet</servlet-name>
+        <url-pattern>/FilterWordSongs</url-pattern>
+    </servlet-mapping>
+    
+    
+     <servlet>
+        <servlet-name>GetSongWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetSongWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetSongWordsServlet</servlet-name>
+        <url-pattern>/GetSongWords</url-pattern>
+    </servlet-mapping>
+     <servlet>
+        <servlet-name>FilterSongWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterSongWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FilterSongWordsServlet</servlet-name>
+        <url-pattern>/FilterSongWords</url-pattern>
     </servlet-mapping>
     
     
@@ -46,7 +107,7 @@
     
      <servlet>
         <servlet-name>GroupsServlet</servlet-name>
-        <servlet-class>com.concordance.Tabs.GroupsServlet</servlet-class>
+        <servlet-class>com.concordance.controller.GroupsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GroupsServlet</servlet-name>
@@ -55,7 +116,7 @@
     
      <servlet>
         <servlet-name>WordsTextServlet</servlet-name>
-        <servlet-class>com.concordance.Tabs.WordsTextServlet</servlet-class>
+        <servlet-class>com.concordance.controller.WordsTextServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>WordsTextServlet</servlet-name>

@@ -35,9 +35,38 @@ function openTab(evt, tabName)
       // Show first tab by default
       window.onload = function() 
       { 
-      	getDocumentsTable('DocumentsTable');
-		getDBWordsTable('WordsTable');      	
+      	getSongs(0);
+		getWordsTable('WordsTable',0);      	
       	getGroupsTable(0);
       	
+		document.getElementById("uploadForm").addEventListener("submit", async function(event) {
+		 	  event.preventDefault(); // 🛑 stop the page reload
+
+		 	  const form = event.target;
+
+		 	  // Prepare form data for sending
+		 	  const formData = new FormData(form);
+
+		 	  try {
+		 	    // Send data to the server
+		 	    const response = await fetch(form.action, {
+		 	      method: form.method,
+		 	      body: formData
+		 	    });
+
+		 	    // Handle the response
+		 	    const result = await response.text();
+		 	    alert("Loaded" + result );
+				// Clear the form
+				form.reset();
+				// Optionally close the modal
+				   const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+				   modal.hide();
+
+		 	  } catch (error) {
+		 	    console.error("Submission failed", error);
+		 	    document.getElementById("result").innerText = "❌ Submission failed!";
+		 	  }
+		 	});
       	document.getElementsByClassName('tablinks')[0].click(); 
      };

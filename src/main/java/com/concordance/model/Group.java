@@ -1,4 +1,4 @@
-package com.concordance.objects;
+package com.concordance.model;
 
 public class Group {
 	

@@ -1,4 +1,4 @@
-package com.concordance.Tabs;
+package com.concordance.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.concordance.objects.Document;
-import com.concordance.objects.Group;
+import com.concordance.model.Song;
+import com.concordance.model.Group;
 
 
 public class GroupsServlet extends HttpServlet {

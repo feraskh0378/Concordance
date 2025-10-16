@@ -1,4 +1,4 @@
-package com.concordance.Tabs;
+package com.concordance.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.concordance.objects.DBWord;
-import com.concordance.objects.Document;
-import com.concordance.objects.Word;
+import com.concordance.model.Word;
+import com.concordance.model.Song;
+import com.concordance.model.Word;
 
 /*
  *  data.append("Word", word.value);
@@ -23,30 +23,21 @@ public class DBWordsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	
-    	ArrayList<DBWord>  wordsList = new ArrayList<DBWord>();
-    	wordsList.add(new DBWord(0, "Feras","TXT",2,2));
-    	wordsList.add(new DBWord(0, "Feras","",2,2));
-    	wordsList.add(new DBWord(1, "Daniel","",2,2));
-    	wordsList.add(new DBWord(2, "Nice","",2,2));
-    	wordsList.add(new DBWord(3, "hi","",2,2));
-    	wordsList.add(new DBWord(3, "hi","",2,2));
-    	wordsList.add(new DBWord(4, "how","",2,2));
-    	wordsList.add(new DBWord(5, "why","",2,2));
-    	wordsList.add(new DBWord(6, "So","",2,2));
-    	wordsList.add(new DBWord(7, "NO","",2,2));
+    	ArrayList<Word>  wordsList = new ArrayList<Word>();
+    	
     	
 	   String inputWord  = request.getParameter("Word");
 	   String inputGroup  = request.getParameter("Group");
        String inputNumberOfInstances    = request.getParameter("NumberOfInstances");
        String inputNumberOfChars   = request.getParameter("NumberOfChars");
          
-       ArrayList<DBWord>  retWordsList = new ArrayList<DBWord>();
-       for(DBWord word : wordsList)
+       ArrayList<Word>  retWordsList = new ArrayList<Word>();
+       for(Word word : wordsList)
        {       		 
        		if(     (inputWord == ""  || word.getWord().contains(inputWord))   &&       				
        				(inputGroup == ""   || word.getGroup().contains(inputGroup))   &&
        				(inputNumberOfInstances == ""    || String.valueOf(word.getNumberOfInstances()).equals(inputNumberOfInstances) )&&
-       				(inputNumberOfChars == ""    || String.valueOf(word.getNumberOfLetters()).equals(inputNumberOfChars) ))
+       				(inputNumberOfChars == ""    || String.valueOf(word.getNumberOfChars()).equals(inputNumberOfChars) ))
        		{
        			retWordsList.add(word);
        		}

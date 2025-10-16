@@ -1,33 +1,40 @@
-package com.concordance.objects;
+package com.concordance.model ;
 
-public class Word {
+public class SongWord {
 	
-	public Word(int id,String word, String document,  int verse, int line, int numberOfLetters)
+	public SongWord(int id,String word, String song,String group,  int verse, int line,int linePlace)
 	{
 		this.id = id;
 		this.word = word;
-		this.document = document;
+		this.song = song;
 		this.verse = verse;
 		this.line = line;
-		this.frequency = line;
-		this.group = "TXT";
+		this.frequency = 0;
+		this.group = group;
+		this.linePlace = linePlace;
 	}
 
 	private int    id;
 	private String word;
-	private String document;
+	private String song;
 	private int    verse;
 	private int    line;		
 	private int    frequency;
+	private int    linePlace;
 	private String group;
+	
+	public int getId()
+	{
+		return id;
+	}
 	
 	public String getWord()
 	{
 		return  word;
 	}
-	public String getDocument()
+	public String getSong()
 	{
-		return  document;
+		return  song;
 	}
 	public int getVerse()
 	{
@@ -37,9 +44,9 @@ public class Word {
 	{
 		return  line;
 	}
-	public int getFrequency()
+	public int getLinePlace()
 	{
-		return  frequency;
+		return  linePlace;
 	}
 	public String getGroup()
 	{
