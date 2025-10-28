@@ -49,7 +49,7 @@ public class UploadServlet extends HttpServlet
         int placeInLine = 1;
         
         
-        int newSongID = songs.addSong(new Song(0,title,poet,composer, 0,0,0));
+        int newSongID = songs.addSong(new Song(0,title,poet,composer,date, 0,0,0));
         
         if(newSongID == 0)
         {
@@ -75,7 +75,7 @@ public class UploadServlet extends HttpServlet
         	
         	for (String word : words) 
         	{        		
-        		wordsDAO.addWord(new Word(word,"",title,verseNumber,lineNumber,placeInLine,0,0),newSongID);
+        		wordsDAO.addWord(new Word(0,word,"",title,verseNumber,lineNumber,placeInLine,0,0),newSongID);
         		placeInLine++;
         		numberOfWords++;
         	}
@@ -83,12 +83,12 @@ public class UploadServlet extends HttpServlet
         	lineNumber++;
         }
         
-        songs.updateSong(newSongID,new Song(newSongID,title,poet,composer, verseNumber,lineNumber,numberOfWords));
+        songs.updateSong(newSongID,new Song(newSongID,title,poet,composer,date, verseNumber,lineNumber,numberOfWords));
 
   
         // Redirect or show message
         request.setAttribute("message", "Song uploaded successfully!");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("upload.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("UploadSong.jsp");
         dispatcher.forward(request, response);
     }
 }

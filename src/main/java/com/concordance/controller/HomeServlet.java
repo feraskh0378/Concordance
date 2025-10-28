@@ -15,12 +15,6 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	
-    	ArrayList<Song>  documentsList = new ArrayList<Song>();
-    
-      //  request.setAttribute("DocumentsTabData", documentsList);
-     
-
-        // Forward request to JSP
         RequestDispatcher dispatcher = request.getRequestDispatcher("home.jsp");
         dispatcher.forward(request, response);
     }

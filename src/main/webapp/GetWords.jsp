@@ -22,10 +22,10 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
   					<th>Number of chars</th>
  				</tr>
  				<tr>
-  					<td><input type="txt" id="Word"               oninput="filterWordsTable('WordsTable',0)"></td>                
-  					<td><input type="txt" id="Group"              oninput="filterWordsTable('WordsTable',0)"></td>
-  					<td><input type="txt" id="NumberOfInstances"  oninput="filterWordsTable('WordsTable',0)"></td>
-  					<td><input type="txt" id="NumberOfChars"      oninput="filterWordsTable('WordsTable',0)"></td>            
+  					<td><input type="txt" id="Word"               oninput="filterWords(0)"></td>                
+  					<td><input type="txt" id="Group"              oninput="filterWords(0)"></td>
+  					<td><input type="txt" id="NumberOfInstances"  oninput="filterWords(0)"></td>
+  					<td><input type="txt" id="NumberOfChars"      oninput="filterWords(0)"></td>            
  				</tr>  
 	  			     
       
@@ -35,7 +35,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
         	for(Word word : words)
           	{ 
 	        %>                 
-	         <tr onclick="getWordSongsTable('WordSongsTable', '<%= word.getWord() %>',0)">   
+	         <tr id='<%= word.getWord() %>' onclick="getWordSongs('<%= word.getWord() %>',0); ToggleSelectedWord(this); HideWordText('TextWordsLines'); UpdateAddWordToGroupBox('<%= word.getWord() %>');">   
 	             <td class="StringTd" ><%= word.getWord() %></td>                 
 	             <td class="StringTd"><%= word.getGroup() %></td>
 	             <td class="IntTd"><%= word.getNumberOfInstancesDB() %></td>
@@ -46,9 +46,14 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 	       } 
 	       %>	
 	       <tr>
+	       <td colspan=1 >  
+	      <button type="button" class="btn btn-primary"  title="Click to add the word to group" data-bs-toggle="modal" data-bs-target="#addWordToGroup">
+  Add to group 
+</button>
+	       	</td>
 	        <% if(inputStartIndex != 0) { %>
-      			<td colspan=2 >  		
- 		 			<button class="circle-btn" onclick="filterWordsTable('WordsTable',<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
+      			<td colspan=1 >  		
+ 		 			<button class="circle-btn" onclick="filterWords(<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
 				</td>
 			<% } else { %>
 				<td colspan=2 >  		
@@ -62,7 +67,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 						</td>
 					<% } else { %>
 					<td colspan=2>  	
-					     <button class="circle-btn" onclick="filterWordsTable('WordsTable',<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
+					     <button class="circle-btn" onclick="filterWords(<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
 					     </td>
 						<% } %>
 	        </tr>	   	

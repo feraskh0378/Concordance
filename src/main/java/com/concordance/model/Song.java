@@ -3,7 +3,7 @@ package com.concordance.model;
 public class Song 
 {
 	
-	public Song(int Id,String title, String poet,String composer, int numberOfVerses, int numberOfLines, int numberOfWords)
+	public Song(int Id,String title, String poet,String composer, String date,int numberOfVerses, int numberOfLines, int numberOfWords)
 	{
 		this.id = Id;
 		this.title = title;
@@ -12,6 +12,7 @@ public class Song
 		this.numberOfLines = numberOfLines;
 		this.numberOfWords = numberOfWords;
 		this.composer = composer;
+		this.date = date;
 		
 	}
 
@@ -22,6 +23,7 @@ public class Song
 	private int    numberOfVerses;
 	private int    numberOfLines;
 	private int    numberOfWords;
+	private  String date;
 	
 	public int getId()
 	{
@@ -50,5 +52,9 @@ public class Song
 	public int getNumberOfWords()
 	{
 		return numberOfWords;
+	}
+	public String getDate()
+	{
+		return date;
 	}
 }

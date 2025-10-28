@@ -3,7 +3,7 @@
 	            <table id="TextGroupsTable" width=600px height=500px > 
 	  			<tr> 
 	      				<td colspan="2">  		
-	  		 				Text
+	  		 				${SongTitle}
 						</td>	
 					</tr>
 	    			<tr style="width:100%; height:100%;"> 
@@ -11,6 +11,9 @@
 	  		 				<div id="TextGroupsLines"  >
 	  		 				
 	  		 				 <%
+	  
+	   int nextVerse =  (int) request.getAttribute("NextVerse") ;
+	   int prevVerse =  (int) request.getAttribute("PrevVerse") ;	   	  
 	   ArrayList<ArrayList<SongWord>> textVerses = (ArrayList<ArrayList<SongWord>>) request.getAttribute("WordTextData");
 	   String word = (String) request.getAttribute("WordData");
 	  	        
@@ -37,19 +40,36 @@
 	   	   }
 	   	  out.print("<br><br>");
    	   }
+        /*   request.setAttribute("NextVerse", nextVerse);
+            request.setAttribute("PrevVerse", prevVerse);
+            request.setAttribute("ViewId", viewId);
+            */
    	   %>
 	  		 				
 	  		 				</div>
 						</td>	
 					</tr>
-					<tr> 
-	      				<td>  		
-	  		 			<button class="circle-btn">&lt;</button>
-						</td>	
-						<td>  		
-	  		 				<button class="circle-btn">&gt;</button>
-						</td>
-					</tr>
+					   <tr>
+	        <% if(prevVerse != 0) { %>
+      			<td>  		
+ 		 			<button class="circle-btn" onclick="ShowWordText('${WordId}','<%= prevVerse%>','${ViewID}')">&lt;</button>
+				</td>
+			<% } else { %>
+				<td >  		
+ 		 			<button class="disabled-circle-btn" onclick="">&lt;</button>
+				</td>							
+			<% } %>
+					
+		    <% if(nextVerse == 0) { %>
+				<td >  		
+			 				<button class="disabled-circle-btn" onclick="">&gt;</button>
+				</td>
+			<% } else { %>
+			<td >  	
+			     <button class="circle-btn" onclick="ShowWordText('${WordId}','<%= nextVerse%>','${ViewID}')">&gt;</button>
+			     </td>
+				<% } %>
+	        </tr>	   	
 				</table> 
    
      

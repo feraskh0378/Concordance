@@ -18,9 +18,17 @@ public class Group {
 	{
 		return  group;
 	}
+	public int getId()
+	{
+		return  id;
+	}
 	public int getNumberOfWords()
 	{
 		return  numberOfWords;
+	}
+	public void setNumberOfWords(int n)
+	{
+		numberOfWords = n;
 	}
 
 }

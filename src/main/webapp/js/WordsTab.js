@@ -1,78 +1,48 @@
-function updateWordsDocumentsTable()
-{
-	
-	let data = new URLSearchParams();
-	
-   let word  =  document.getElementById("WordWord");
-   let doc =  document.getElementById("WordDocument");
-   let verse    =  document.getElementById("WordVerse");
-   let line    =  document.getElementById("WordLine");   
-   data.append("Word", word.value);
-   data.append("Document", doc.value);
-   data.append("Verse", verse.value);
-   data.append("Line", line.value);   
-			   
-   fetch("WordsTable", {
-     method: "POST",
-     body: data
-   })
-   .then(res => res.text())
-   .then(data => {
-	let table = document.getElementById("WordDocumentsTable");
-	
-	// remove rows one by one (from bottom up)
-	for (let i = table.rows.length - 1; i >= 3; i--) {
-	  table.deleteRow(i);
-	}			
-	table.insertAdjacentHTML("beforeend", data);
 
-	table.hidden = false;
-					
+function UpdateAddWordToGroupBox(wordValue)
+{
+	let word = document.getElementById("AddWordToGroupInput");
+	word.value = wordValue;
+	
+}
+
+function CheckSelectedWord(view)
+{
+	let newSelectedWord  = view.querySelector('[id="'+SelectedWord.id+'"]');
+	if(newSelectedWord != null)
+	{
+		newSelectedWord.classList.toggle("highlight");
+		SelectedWord = newSelectedWord;
 	}
-);
-          
-};
+}
 
-function ShowWordDocuments(word)
+
+function CheckSelectedWordSong(view)
 {
-	let data = new URLSearchParams();				   
-   data.append("Word", word);
-   data.append("Document", "");
-   data.append("Verse", "");
-   data.append("Line", "");   
-   
-   fetch("WordsTable", {
-   		     method: "POST",
-   		     body: data
-   		   })
-   		   .then(res => res.text())
-   		   .then(data => {
-   			let table = document.getElementById("WordDocumentsTable");
-   			
-   			// remove rows one by one (from bottom up)
-   			for (let i = table.rows.length - 1; i >= 3; i--) {
-   			  table.deleteRow(i);
-   			}			
-   			table.insertAdjacentHTML("beforeend", data);
-			let tableName = document.getElementById("WordDocumentsTitle");
-			tableName.innerHTML = word;
-			tableName = document.getElementById("WordWord");
-			tableName.value = word;
-	
-			table.hidden = false;
-   							
-   			}
-   		);
-};
+	let newSelectedWordSong  = view.querySelector('[id="'+SelectedWordSong.id+'"]');
+	if(newSelectedWordSong != null)
+	{
+		newSelectedWordSong.classList.toggle("highlight");
+		SelectedWordSong = newSelectedWordSong;
+	}
+}
 
-function getWordSongsTable(tableId,word,fromIndex)
+
+
+function ToggleSelectedWord(tr)
+{
+	if(SelectedWord != null)
+	{
+	 	SelectedWord.classList.toggle("highlight");
+	}
+    SelectedWord = tr;
+	SelectedWord.classList.toggle("highlight");
+}
+
+function getWordSongs(word,fromIndex)
 {
 		let data = new URLSearchParams();
-		
-		let  table = document.getElementById(tableId);
-
-
-		
+				
 	   data.append("WordText", word);	   
 	   data.append("StartIndex", fromIndex);
 	   
@@ -93,6 +63,7 @@ function getWordSongsTable(tableId,word,fromIndex)
 		table.innerHTML = data;
 
 		table.hidden = false;
+		CheckSelectedWordSong(table);
 						
 		}
 	);
@@ -100,12 +71,12 @@ function getWordSongsTable(tableId,word,fromIndex)
 };
 
 
-function filterWordSongsTable(tableId,fromIndex)
+function filterWordSongs(fromIndex)
 {
 	
 	let data = new URLSearchParams();
 	
-	let  table = document.getElementById(tableId);
+	let  table = document.getElementById('WordSongsTable');
 
 	let wordObject  = table.querySelector('[id="Word"]');
 	let wordInput  = wordObject.value;
@@ -138,12 +109,12 @@ function filterWordSongsTable(tableId,fromIndex)
    })
    .then(res => res.text())
    .then(data => {
-	let table = document.getElementById(tableId);
+	let table = document.getElementById('WordSongsTable');
 	
 	// remove rows one by one (from bottom up)
 	for (let i = table.rows.length - 1; i >= 3; i--) {  table.deleteRow(i);}			
 	table.insertAdjacentHTML("beforeend", data);
-
+	CheckSelectedWordSong(table);
 	table.hidden = false;
 					
 	}
@@ -153,101 +124,12 @@ function filterWordSongsTable(tableId,fromIndex)
 
 
 
-function getSongWordsTable(tableId,songId,songTitle,fromIndex)
-{
-	
-	let data = new URLSearchParams();
-	
-	let  table = document.getElementById(tableId);
-
-
-	
-   data.append("SongId", songId);
-   data.append("SongTitle", songTitle);
-   data.append("StartIndex", fromIndex);
-   
-   
- 
-   			   
-   fetch("GetSongWords", {
-     method: "POST",
-     body: data
-   })
-   .then(res => res.text())
-   .then(data => 
-	{
-	let table = document.getElementById("SongWordsView");
-	
-	// remove rows one by one (from bottom up)
-				
-	table.innerHTML = data;
-
-	table.hidden = false;
-					
-	}
-);
-          
-};
-
-
-function filterSongWordsTable(tableId,fromIndex)
-{
-	
-	let data = new URLSearchParams();
-	
-	let  table = document.getElementById(tableId);
-
-	let wordObject  = table.querySelector('[id="Word"]');
-	let wordInput  = wordObject.value;
-	let songObject   = table.querySelector('[id="Song"]');
-	let songInput   = songObject.value;
-	let verseInput = table.querySelector('[id="Verse"]').value;
-	let lineInput  = table.querySelector('[id="Line"]').value; 
-	let linePlaceInput  = table.querySelector('[id="PlaceInLine"]').value;
-	let GroupInput  = table.querySelector('[id="Group"]').value;
-	let tableTitleObject = table.querySelector('[id="TableTitle"]');
-	let fSong =  true;
-	let fGroup = true;
-	let fWord =  true;
-		
-   
-   data.append("Word", wordInput);
-   data.append("FilterWord", fWord);
-   data.append("Song", songInput);
-   data.append("FilterSong", fSong);
-   data.append("Verse", verseInput);
-   data.append("Line", lineInput);
-   data.append("LinePlace", linePlaceInput);
-   data.append("Group", GroupInput);
-   data.append("FilterGroup", fGroup);
-   data.append("StartIndex", fromIndex);
-   			   
-   fetch("FilterSongWords", {
-     method: "POST",
-     body: data
-   })
-   .then(res => res.text())
-   .then(data => {
-	let table = document.getElementById(tableId);
-	
-	// remove rows one by one (from bottom up)
-	for (let i = table.rows.length - 1; i >= 3; i--) {  table.deleteRow(i);}			
-	table.insertAdjacentHTML("beforeend", data);
-
-	table.hidden = false;
-					
-	}
-);
-          
-};
-
-
-	function filterWordsTable(tableId,fromIndex)
+	function filterWords(fromIndex)
 	{
 		let data = new URLSearchParams();
 		
 	
-		let  table = document.getElementById(tableId);
+		let  table = document.getElementById('WordsTable');
 		
 	   let word  =  table.querySelector('[id="Word"]');
 	   let group  =  table.querySelector('[id="Group"]');
@@ -265,16 +147,18 @@ function filterSongWordsTable(tableId,fromIndex)
 	   })
 	   .then(res => res.text())
 	   .then(data => {
-			let table = document.getElementById(tableId);
+			let table = document.getElementById('WordsTable');
 			
 			// remove rows one by one (from bottom up)
 			for (let i = table.rows.length - 1; i >= 3; i--) {table.deleteRow(i);}			
-		    table.insertAdjacentHTML("beforeend", data);					
+		    table.insertAdjacentHTML("beforeend", data);	
+			
+			CheckSelectedWord(table)				
 		}
 		);      
 	};
 	
-function getWordsTable(tableId,fromIndex)
+function getWords(fromIndex)
 {
 	let data = new URLSearchParams();
 	data.append("StartIndex", fromIndex);
@@ -288,7 +172,7 @@ function getWordsTable(tableId,fromIndex)
    .then(data => 
 	{
 		let view = document.getElementById("WordsView");
-		view.innerHTML = data;					
+		view.innerHTML = data;			
 	}
 	);      
 };

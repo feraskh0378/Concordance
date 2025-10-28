@@ -5,6 +5,24 @@
          version="3.1">
 
     <!-- Home servlet -->
+    
+    
+      <servlet>
+        <servlet-name>AddWordToGroupServlet</servlet-name>
+        <servlet-class>com.concordance.controller.AddWordToGroupServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddWordToGroupServlet</servlet-name>
+        <url-pattern>/AddWordToGroup</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GetGroupsOptionsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetGroupsOptionsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetGroupsOptionsServlet</servlet-name>
+        <url-pattern>/GetGroupsOptions</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
         <servlet-class>com.concordance.controller.HomeServlet</servlet-class>
@@ -106,12 +124,38 @@
     
     
      <servlet>
-        <servlet-name>GroupsServlet</servlet-name>
-        <servlet-class>com.concordance.controller.GroupsServlet</servlet-class>
+        <servlet-name>GetGroupsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetGroupsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>GroupsServlet</servlet-name>
-        <url-pattern>/GroupsTable</url-pattern>
+        <servlet-name>GetGroupsServlet</servlet-name>
+        <url-pattern>/GetGroups</url-pattern>
+    </servlet-mapping>
+    
+      <servlet>
+        <servlet-name>FilterGroupsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterGroupsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FilterGroupsServlet</servlet-name>
+        <url-pattern>/FilterGroups</url-pattern>
+    </servlet-mapping>
+    
+     <servlet>
+        <servlet-name>GetGroupWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.GetGroupWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetGroupWordsServlet</servlet-name>
+        <url-pattern>/GetGroupWords</url-pattern>
+    </servlet-mapping>
+     <servlet>
+        <servlet-name>FilterGroupWordsServlet</servlet-name>
+        <servlet-class>com.concordance.controller.FilterGroupWordsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FilterGroupWordsServlet</servlet-name>
+        <url-pattern>/FilterGroupWords</url-pattern>
     </servlet-mapping>
     
      <servlet>
@@ -122,6 +166,16 @@
         <servlet-name>WordsTextServlet</servlet-name>
         <url-pattern>/WordsText</url-pattern>
     </servlet-mapping>
+    
+     <servlet>
+        <servlet-name>NewGroupServlet</servlet-name>
+        <servlet-class>com.concordance.controller.NewGroupServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NewGroupServlet</servlet-name>
+        <url-pattern>/NewGroup</url-pattern>
+    </servlet-mapping>
+    
     
     
     

@@ -13,9 +13,9 @@ public class Word {
 	private int numberOfInstancesInDB;
 	
 	
-	public Word(String word,String group,String songTitle,int verseNumber, int lineNumber, int placeInLine, int numberOfInstancesInSong, int numberOfInstancesInDB )
+	public Word(int _id,String word,String group,String songTitle,int verseNumber, int lineNumber, int placeInLine, int numberOfInstancesInSong, int numberOfInstancesInDB )
 	{
-		this.id = 0;
+		this.id = _id;
 		this.word = word;
 		this.songTitle = songTitle;
 		this.groupName = group;
@@ -44,6 +44,11 @@ public class Word {
 	public void setID(int _id)
 	{
 		id = _id;
+	}
+	
+	public int getId()
+	{
+		return id;
 	}
 	
 	public void setGroup(String _group)

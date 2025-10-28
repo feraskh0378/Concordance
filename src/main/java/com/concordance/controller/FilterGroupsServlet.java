@@ -10,36 +10,41 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.concordance.dao.GroupsDAO;
 import com.concordance.dao.SongsDAO;
+import com.concordance.model.Group;
 import com.concordance.model.Song;
 
-public class GetSongsServlet extends HttpServlet 
+public class FilterGroupsServlet extends HttpServlet 
 {
 	
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-    	ArrayList<Song>  songsList = null;
-    	SongsDAO songsDAO = new SongsDAO(); 	
-    	songsDAO.initConnection();
-    	int maxInPage = 40;
+    	ArrayList<Group>  groupsList = null;
+    	int filterGroupsSize = 0;
+    	GroupsDAO groupsDAO = new GroupsDAO(); 	
+    	groupsDAO.initConnection();
     	
     	
+        String inputGroup  = request.getParameter("GroupName");
+        String inputNumberOfWords = request.getParameter("NumberOfWords");
         String inputStartIndex  = request.getParameter("StartIndex");
+        int maxInPage = 40;
         
-        songsList = songsDAO.getAllSongs(inputStartIndex, String.valueOf(maxInPage)); 
-        int songsSize = songsDAO.getSongsSize();
+        
+        groupsList = groupsDAO.filterGroups(inputStartIndex, String.valueOf(maxInPage),inputGroup,inputNumberOfWords);
+        filterGroupsSize = groupsDAO.filterGroupsSize(inputStartIndex, String.valueOf(maxInPage),inputGroup,inputNumberOfWords);
           	    	
         // Dynamic content for each tab
-        request.setAttribute("SongsTabData", songsList);
+        request.setAttribute("GroupsTabData", groupsList);
         request.setAttribute("StartIndex", Integer.parseInt(inputStartIndex));
-        request.setAttribute("SongsSize", songsSize);
+        request.setAttribute("GroupsSize", filterGroupsSize);
         request.setAttribute("MaxInPage", maxInPage);
-        
      
 
         // Forward request to JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("GetSongs.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("FilterGroups.jsp");
         dispatcher.forward(request, response);
     
     }

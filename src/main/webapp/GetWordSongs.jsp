@@ -23,16 +23,16 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 			            <th>Song</th>
 			            <th>Verse</th>
 			            <th>Line</th>			            
-			            <th>Frequency</th>
+			            <th>Position in line</th>
 			            <th>Group</th>
         			</tr> 
                 	<tr>
-			             <td><input type="txt" id="Word"  value="<%= wordText %>"     disabled oninput="filterWordSongsTable('WordSongsTable',0)"></td>                
-			             <td><input type="txt" id="Song"  value=""  oninput="filterWordSongsTable('WordSongsTable',0)"></td>			             
-			             <td><input type="txt" id="Verse" oninput="filterWordSongsTable('WordSongsTable',0)"></td>
-			             <td><input type="txt" id="Line" oninput="filterWordSongsTable('WordSongsTable',0)"></td>			           
-			             <td><input type="txt" id="PlaceInLine" oninput="filterWordSongsTable('WordSongsTable',0)"></td>
-			             <td><input type="txt" id="Group"  value="" oninput="filterWordSongsTable('WordSongsTable',0)"></td>              
+			             <td><input type="txt" id="Word"  value="<%= wordText %>"     disabled oninput="filterWordSongs(0)"></td>                
+			             <td><input type="txt" id="Song"  value=""  oninput="filterWordSongs(0)"></td>			             
+			             <td><input type="txt" id="Verse" oninput="filterWordSongs(0)"></td>
+			             <td><input type="txt" id="Line" oninput="filterWordSongs(0)"></td>			           
+			             <td><input type="txt" id="PlaceInLine" oninput="filterWordSongs(0)"></td>
+			             <td><input type="txt" id="Group"  value="" oninput="filterWordSongs(0)"></td>              
 			         </tr>    
 			          <% 
         	
@@ -41,7 +41,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
         	{
         		
             %>         
-	        <tr onclick="ShowWordText('<%= songWord.getId() %>','<%= songWord.getWord() %>','<%= songWord.getSong() %>','<%= songWord.getVerse() %>','<%= songWord.getLine() %>','<%= songWord.getLinePlace() %>')">
+	        <tr id='<%= songWord.getId() %>'  onclick="ShowWordText('<%= songWord.getId() %>',0,'TextWordsLines');ToggleSelectedWordSong(this)">
 	            <td class="StringTd" ><%= songWord.getWord() %></td>                
 	            <td class="StringTd" ><%= songWord.getSong() %></td>
 	            <td class="IntTd"><%= songWord.getVerse() %></td>
@@ -56,7 +56,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 	       <tr>
 	        <% if(inputStartIndex != 0) { %>
       			<td colspan=3 >  		
- 		 			<button class="circle-btn" onclick="filterWordSongsTable('WordSongsTable',<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
+ 		 			<button class="circle-btn" onclick="filterWordSongs(<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
 				</td>
 			<% } else { %>
 				<td colspan=3 >  		
@@ -70,7 +70,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 						</td>
 					<% } else { %>
 					<td colspan=4>  	
-					     <button class="circle-btn" onclick="filterWordSongsTable('WordSongsTable',<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
+					     <button class="circle-btn" onclick="filterWordSongs(<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
 					     </td>
 						<% } %>
 	        </tr>	   	

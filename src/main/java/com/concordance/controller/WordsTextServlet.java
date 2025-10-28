@@ -32,44 +32,61 @@ public class WordsTextServlet extends HttpServlet {
 	    	wordsDoa.initConnection();
 	    	songsDoa.initConnection();
 	    	
-    	   String wordId  = request.getParameter("WordId");
-    	   String word    = request.getParameter("Word");
-    	   String song    = request.getParameter("Song");
-    	   String songId    = request.getParameter("SongId");
-    	   String verse   = request.getParameter("Verse");
-    	   String line    = request.getParameter("Line");
-    	   String linePlace  = request.getParameter("LinePlace");
-    	   String[] text= new String[10];
+	       ArrayList<ArrayList<SongWord>> Verses = new ArrayList<ArrayList<SongWord>>();	
+    	   String inputWordId  = request.getParameter("WordId");
+    	   String inputVerse  = request.getParameter("Verse");
+    	   String viewId  = request.getParameter("ViewId");
+    	   SongWord songWord = wordsDoa.getSongWord(Integer.parseInt(inputWordId));
     	   
-    	   ArrayList<ArrayList<SongWord>> Verses = new ArrayList<ArrayList<SongWord>>();
-    	   
-    	   Song songObject = songsDoa.getSong(wordsDoa.getSongId(Integer.parseInt(wordId))); 
-    	   
-    	   
-    	   int intVerse = Integer.parseInt(verse);
-    	   if(intVerse > 1)
-    	   {    		 
-    		   String prevVerse = String.valueOf(intVerse - 1);
-    		   ArrayList<SongWord> FirstVerse = wordsDoa.FilterSongWords("0","100","",false, song, false,"",false,prevVerse,"","");
-    		   Verses.add(FirstVerse);
+    	       	     	  
+    	   int songID = wordsDoa.getSongId(Integer.parseInt(inputWordId));
+    	   Song songObject = songsDoa.getSong(songID); 
+    	       	   
+    	   int wordVerse = songWord.getVerse();
+    	   if(Integer.parseInt(inputVerse) != 0)
+    	   {
+    		   wordVerse = Integer.parseInt(inputVerse);
     	   }
     	   
-    	   ArrayList<SongWord> WordVerse = wordsDoa.FilterSongWords("0","100","",false, song, false,"",false,verse,"","");
+    	   
+    	   ArrayList<SongWord> WordVerse = wordsDoa.filterSongWords(String.valueOf(songID),"0","100",String.valueOf(wordVerse));    	   
     	   Verses.add(WordVerse);
     	   
+    	   if((wordVerse + 1) <= songObject.getNumberOfVerses())
+    	   {    		 
+    		   String nextVerse = String.valueOf(wordVerse + 1); 
+    		   ArrayList<SongWord> FirstVerse = wordsDoa.filterSongWords(String.valueOf(songID),"0","100",nextVerse);    		   
+    		   Verses.add(FirstVerse);
+    	   }
+    	  
     	   
-    	   if(intVerse < songObject.getNumberOfVerses())
+    	   
+    	   if((wordVerse + 2) <= songObject.getNumberOfVerses())
     	   {
-    		   String nextVerse = String.valueOf(intVerse + 1);
-    		   ArrayList<SongWord> FirstVerse = wordsDoa.FilterSongWords("0","100","",false, song, false,"",false,nextVerse,"","");
+    		   String nextVerse = String.valueOf(wordVerse + 2);
+    		   ArrayList<SongWord> FirstVerse = wordsDoa.filterSongWords(String.valueOf(songID),"0","100",nextVerse);    		   
     		   Verses.add(FirstVerse);
     	   }
     	  	      	   
             // Dynamic content for each tab
             request.setAttribute("WordTextData", Verses);
-            request.setAttribute("WordData", word);
-     
-
+            request.setAttribute("WordData", songWord.getWord());
+            
+            int nextVerse = 0;
+            int prevVerse = 0;
+            if(wordVerse < songObject.getNumberOfVerses())
+            	nextVerse = wordVerse + 1;
+            
+            if(wordVerse > 1)
+            	prevVerse = wordVerse + -1;
+            
+            request.setAttribute("NextVerse", nextVerse);
+            request.setAttribute("PrevVerse", prevVerse);
+            request.setAttribute("ViewID", viewId);
+            request.setAttribute("WordId", inputWordId);
+            request.setAttribute("SongTitle", songObject.getTitle());
+            
+            
             // Forward request to JSP
             RequestDispatcher dispatcher = request.getRequestDispatcher("WordTextTab.jsp");
             dispatcher.forward(request, response);

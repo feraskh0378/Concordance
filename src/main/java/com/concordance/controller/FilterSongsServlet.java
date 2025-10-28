@@ -28,6 +28,7 @@ public class FilterSongsServlet extends HttpServlet
         String inputTitle  = request.getParameter("Title");
         String inputPoet = request.getParameter("Poet");
         String inputComposer = request.getParameter("Composer");
+        String inputDate = request.getParameter("Date");
         String inputNumberOfVerses    = request.getParameter("NumberOfVerses");
         String inputNumberOfLines    = request.getParameter("NumberOfLines");
         String inputNumberOfWords    = request.getParameter("NumberOfWords");
@@ -35,8 +36,8 @@ public class FilterSongsServlet extends HttpServlet
         int maxInPage = 40;
         
         
-        songsList = songsDAO.filterSongs(inputStartIndex, String.valueOf(maxInPage),inputTitle,inputPoet,inputComposer,inputNumberOfVerses,inputNumberOfLines,inputNumberOfWords);
-        filterSongsSize = songsDAO.filterSongsSize(inputStartIndex, String.valueOf(maxInPage),inputTitle,inputPoet,inputComposer,inputNumberOfVerses,inputNumberOfLines,inputNumberOfWords);
+        songsList = songsDAO.filterSongs(inputStartIndex, String.valueOf(maxInPage),inputTitle,inputPoet,inputComposer,inputDate,inputNumberOfVerses,inputNumberOfLines,inputNumberOfWords);
+        filterSongsSize = songsDAO.filterSongsSize(inputStartIndex, String.valueOf(maxInPage),inputTitle,inputPoet,inputComposer,inputDate,inputNumberOfVerses,inputNumberOfLines,inputNumberOfWords);
           	    	
         // Dynamic content for each tab
         request.setAttribute("SongsTabData", songsList);
@@ -46,7 +47,7 @@ public class FilterSongsServlet extends HttpServlet
      
 
         // Forward request to JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("FilterSongsTable.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("FilterSongs.jsp");
         dispatcher.forward(request, response);
     
     }

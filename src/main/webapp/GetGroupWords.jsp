@@ -1,17 +1,17 @@
 <%@ page import="com.concordance.model.SongWord, java.util.ArrayList, java.util.List, java.util.Map, java.util.HashMap"  contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-String songTitle  =  (String) request.getAttribute("SongTitleData") ;
-ArrayList<SongWord> words  =  (ArrayList<SongWord>)  request.getAttribute("SongWordsData") ;
-int                 songsWordsSize  =  (int) request.getAttribute("SongWordsSize") ;
+String groupName  =  (String) request.getAttribute("GroupNameData") ;
+ArrayList<SongWord> words  =  (ArrayList<SongWord>)  request.getAttribute("GroupWordsData") ;
+int                 groupsWordsSize  =  (int) request.getAttribute("GroupWordsSize") ;
 int                 maxSizeInPage  =  (int) request.getAttribute("MaxSizeInPage") ;
 int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 
 %>
-			<table id="SongsWordsTable"  class="tablecontent" > 
+			<table id="GroupWordsTable"  class="tablecontent" > 
     				<tr> 
       					<td colspan="6">  		
-  							Words in <div id="TableTitle" >Feras</div>
+  							Words in <div id="TableTitle" ><%= groupName %></div>
 						</td>	
 					</tr>
 	  				<tr>
@@ -23,12 +23,12 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 			            <th>Group</th>
         			</tr> 
                 	<tr>
-			             <td><input type="txt" id="Word"       oninput="filterSongWords(0)"></td>                
-			             <td><input type="txt" id="Song"  value="<%= songTitle %>" disabled oninput="filterSongWords(0)"></td>			             
-			             <td><input type="txt" id="Verse" oninput="filterSongWords(0)"></td>
-			             <td><input type="txt" id="Line" oninput="filterSongWords(0)"></td>			           
-			             <td><input type="txt" id="PlaceInLine" oninput="filterSongWords(0)"></td>
-			             <td><input type="txt" id="Group"  value="" oninput="filterSongWords(0)"></td>              
+			             <td><input type="txt" id="Word"       oninput="filterGroupWords(0)"></td>                
+			             <td><input type="txt" id="Song"   oninput="filterGroupWords(0)"></td>			             
+			             <td><input type="txt" id="Verse" oninput="filterGroupWords(0)"></td>
+			             <td><input type="txt" id="Line" oninput="filterGroupWords(0)"></td>			           
+			             <td><input type="txt" id="PlaceInLine" oninput="filterGroupWords(0)"></td>
+			             <td><input type="txt" id="Group"  value="<%= groupName %>" disabled  oninput="filterGroupWords(0)"></td>              
 			         </tr>    
 			          <% 
         	
@@ -37,7 +37,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
         	{
         		
             %>         
-	        <tr id='<%= songWord.getId() %>' onclick="ShowWordText('<%= songWord.getId() %>',0,'TextSongsLines'); ToggleSelectedSongWord(this);">
+	        <tr id='<%= songWord.getId() %>' onclick="ShowWordText('<%= songWord.getId() %>',0,'TextGroupLines'); ToggleSelectedGroupWord(this);">
 	            <td class="StringTd" ><%= songWord.getWord() %></td>                
 	            <td class="StringTd" ><%= songWord.getSong() %></td>
 	            <td class="IntTd"><%= songWord.getVerse() %></td>
@@ -52,7 +52,7 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 	       <tr>
 	        <% if(inputStartIndex != 0) { %>
       			<td colspan=3 >  		
- 		 			<button class="circle-btn" onclick="filterSongWords(<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
+ 		 			<button class="circle-btn" onclick="filterGroupWords(<%= inputStartIndex - maxSizeInPage%>)">&lt;</button>
 				</td>
 			<% } else { %>
 				<td colspan=3 >  		
@@ -60,13 +60,13 @@ int inputStartIndex =   	(int) request.getAttribute("StartIndex");
 				</td>							
 			<% } %>
 					
-		    <% if(inputStartIndex + maxSizeInPage >= songsWordsSize) { %>
+		    <% if(inputStartIndex + maxSizeInPage >= groupsWordsSize) { %>
 						<td colspan=4>  		
 		 		 				<button class="disabled-circle-btn" onclick="">&gt;</button>
 						</td>
 					<% } else { %>
 					<td colspan=4>  	
-					     <button class="circle-btn" onclick="filterSongWords(<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
+					     <button class="circle-btn" onclick="filterGroupWords(<%= inputStartIndex + maxSizeInPage %>)">&gt;</button>
 					     </td>
 						<% } %>
 	        </tr>	   	

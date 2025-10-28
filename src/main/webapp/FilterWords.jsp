@@ -7,7 +7,7 @@
         	for(Word word : words)
           	{ 
 	        %>                 
-	         <tr onclick="getWordSongsTable('WordSongsTable', '<%= word.getWord() %>',0)">         
+	         <tr id='<%= word.getWord() %>' onclick="getWordSongs('<%= word.getWord() %>',0); ToggleSelectedWord(this);">         
 	             <td class="StringTd" ><%= word.getWord() %></td>                 
 	             <td class="StringTd"><%= word.getGroup() %></td>
 	             <td class="IntTd"><%= word.getNumberOfInstancesDB() %></td>
@@ -23,7 +23,7 @@
 	        <tr>
 	        <% if(inputStartIndex != 0) { %>
       			<td colspan=2 >  		
- 		 			<button class="circle-btn" onclick="filterWordsTable('WordsTable',<%= inputStartIndex - MaxInPage%>)">&lt;</button>
+ 		 			<button class="circle-btn" onclick="filterWords(<%= inputStartIndex - MaxInPage%>)">&lt;</button>
 				</td>
 			<% } else { %>
 				<td colspan=2 >  		
@@ -37,7 +37,7 @@
 						</td>
 					<% } else { %>
 					<td colspan=2>  	
-					     <button class="circle-btn" onclick="filterWordsTable('WordsTable',<%= inputStartIndex + MaxInPage %>)">&gt;</button>
+					     <button class="circle-btn" onclick="filterWords(<%= inputStartIndex + MaxInPage %>)">&gt;</button>
 					     </td>
 						<% } %>
 	        </tr>	   

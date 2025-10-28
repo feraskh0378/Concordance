@@ -1,16 +1,16 @@
 package com.concordance.dao;
 
 
-import com.concordance.model.Song;
+import com.concordance.model.Group;
 import com.concordance.model.SongWord;
-import com.concordance.model.Word;
+
 import com.concordance.utils.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordsDAO 
+public class GroupsDAO 
 {
 	private Connection conn = null;
 	
@@ -25,44 +25,38 @@ public class WordsDAO
         }		
 	}
 	
-	 public int getSongId(int wordID)
-	    {
-	    	String Sql = "SELECT \"SongId\" FROM \"Words\"  WHERE \"ID\" = ?";
-	    	try (PreparedStatement sqlStmt = conn.prepareStatement(Sql))
-	    	{    		    		    		    		
-	    		 sqlStmt.setInt(1,wordID);
-	    		 ResultSet rs = sqlStmt.executeQuery(); 
-	    		 while (rs.next()) 
-		         {
-	    			 return rs.getInt(1);
-		         }
-	    	}
-	    	catch (SQLException e) 
-	        {
-	            e.printStackTrace();
-	            return 0;
-	        }  
-	    	  return 0;
-	    }
-
-	//public Word(int id,String word,String group, int numberOfInstances, int numberOfLetters)
 	
-	  public ArrayList<Word> getAllWords(String inputStartIndex, String maxInPage) 
-	    {
-	    	/*
-	    	 * 	   String inputWord     = request.getParameter("Word");
-	       String inputGroup     = request.getParameter("Group");       
-	       String inputNumberOfInstances     = request.getParameter("NumberOfInstances");           
-	       String inputNumberOfChars = request.getParameter("NumberOfChars");
-	    	 */
-	    	ArrayList<Word> Words = new ArrayList<>();
-	    	String sql = " SELECT g.\"GroupName\", w.\"Word\", COUNT(*) AS numberOfInstances , LENGTH(w.\"Word\") AS numberOfChars" +
-	        		     " FROM \"Words\" w " +
-	        			 " JOIN \"Groups\" g "+
-	        		     " ON w.\"GroupId\" = g.\"ID\" "+
-	        		     " GROUP BY g.\"GroupName\", w.\"Word\" "+
-	        		     "LIMIT "+maxInPage+" OFFSET "+ inputStartIndex;
-	        
+	
+	public Group getGroup(String groupName)
+	{		
+    	String sql = " SELECT * FROM \"Groups\" WHERE \"GroupName\"='"+groupName+"'";        		     
+     
+        try 
+        (
+        	 PreparedStatement stmt = conn.prepareStatement(sql);        		
+             ResultSet rs = stmt.executeQuery()
+        ) 
+        {
+            while (rs.next()) 
+            {
+            		            	
+            	return  new Group(rs.getInt("ID"),rs.getString("GroupName"),0);
+            	
+            }
+        } 
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }
+
+        return null;		
+	}
+	
+	
+	 public ArrayList<Group> getAllGroups()
+	 {
+		 ArrayList<Group> Groups = new ArrayList<>();
+	    	String sql = " SELECT \"ID\",\"GroupName\" FROM \"Groups\" ";        		     
 	     
 
 	        try 
@@ -75,8 +69,8 @@ public class WordsDAO
 	            while (rs.next()) 
 	            {
 	            		            	
-	            	Word s = new Word(0,rs.getString("Word"),rs.getString("GroupName"),"",0,0,0,0,rs.getInt("numberOfInstances"));
-	            	Words.add(s);
+	            	Group s = new Group(rs.getInt("ID"),rs.getString("GroupName"),0);
+	            	Groups.add(s);
 	            }
 
 	        } 
@@ -85,22 +79,77 @@ public class WordsDAO
 	            e.printStackTrace();
 	        }
 
-	        return Words;
+	        return Groups;
+	 }
+
+		
+	  public ArrayList<Group> getAllGroups(String inputStartIndex, String maxInPage) 
+	    {
+		  
+	    	ArrayList<Group> Groups = new ArrayList<>();
+	    	     
+	    	String sql = " SELECT * "+
+	       		     "FROM \"Groups\" " +       			
+	       			 "WHERE \"ID\" != 0 "+       		    
+	       		     "LIMIT "+maxInPage+" OFFSET "+ inputStartIndex;
+	        try 
+	        (
+	        	 PreparedStatement stmt = conn.prepareStatement(sql);        		
+	             ResultSet rs = stmt.executeQuery()
+	        ) 
+	        {
+
+	            while (rs.next()) 
+	            {
+	            		            	
+	            	Group s = new Group(rs.getInt("ID"),rs.getString("GroupName"),0);
+	            	Groups.add(s);
+	            }
+
+	        } 
+	        catch (SQLException e) 
+	        {
+	            e.printStackTrace();
+	        }
+	        
+	    	String NumberOfWordsSql = " SELECT COUNT(*) AS numberOfInstances " +
+       		     " FROM \"Words\" w " +       			        		     
+       			 "WHERE w.\"GroupId\" = ?  ";
+       		     
+       		     
+	    	
+	    	for(Group group : Groups)
+	    	{
+	    		try 
+		        (
+		        	 PreparedStatement NumberOfWordsStmt = conn.prepareStatement(NumberOfWordsSql);	    			 
+		        ) 
+		        {
+	    			NumberOfWordsStmt.setInt(1, group.getId() );
+		            ResultSet rs = NumberOfWordsStmt.executeQuery();
+
+		            while (rs.next()) 
+		            {
+		            	int numberofWordsInt = rs.getInt("numberOfInstances");
+		            	group.setNumberOfWords(numberofWordsInt);
+		            }
+
+		        } 
+		        catch (SQLException e) 
+		        {
+		            e.printStackTrace();
+		        }
+
+	    	
+	    	}
+
+	        return Groups;
 	    }
 	  
-	  public int getAllWordsSize(String inputStartIndex, String maxInPage) 
+	  public int getAllGroupsSize(String inputStartIndex, String maxInPage) 
 	    {
-	    	/*
-	    	 * 	   String inputWord     = request.getParameter("Word");
-	       String inputGroup     = request.getParameter("Group");       
-	       String inputNumberOfInstances     = request.getParameter("NumberOfInstances");           
-	       String inputNumberOfChars = request.getParameter("NumberOfChars");
-	    	 */
-	    	ArrayList<Word> Words = new ArrayList<>();
-	    	String sql = " SELECT COUNT(*)  FROM \"Words\" ";	         		     
-	        
-	     
-
+		     	String sql = " SELECT COUNT(*)  FROM \"Groups\" w " ;
+	        			 
 	        try 
 	        (
 	        	 PreparedStatement stmt = conn.prepareStatement(sql);        		
@@ -124,104 +173,95 @@ public class WordsDAO
 	        return 0;
 	    }
 	  
-    public ArrayList<Word> FilterWords(String inputStartIndex , String inputMaxSize,String inputWord , String inputGroup,String inputNumberOfInstances,String inputNumberOfChars ) 
-    {
-    	/*
-    	 * 	   String inputWord     = request.getParameter("Word");
-       String inputGroup     = request.getParameter("Group");       
-       String inputNumberOfInstances     = request.getParameter("NumberOfInstances");           
-       String inputNumberOfChars = request.getParameter("NumberOfChars");
-    	 */
-    	ArrayList<Word> Words = new ArrayList<>();
-    	String sql = " SELECT g.\"GroupName\", w.\"Word\", COUNT(*) AS numberOfInstances , LENGTH(w.\"Word\") AS numberOfChars" +
-        		     " FROM \"Words\" w " +
-        			 " JOIN \"Groups\" g "+
-        		     " ON w.\"GroupId\" = g.\"ID\" "+
-        			 " WHERE 1=1 ";
-        
-        if(!inputWord.isEmpty())
-        {
-        	sql = sql + "AND  w.\"Word\" LIKE  '%"+inputWord+ "%'";
-        }
-        
-        if(!inputGroup.isEmpty())
-        {
-        	sql = sql + "AND  g.\"GroupName\" LIKE '%"+inputGroup+ "%'";        	         	
-        }
-        
-        sql = sql + " GROUP BY g.\"GroupName\", w.\"Word\" ";
-        sql = sql + "HAVING COUNT(*) > 0 ";
-        		     
-        if(!inputNumberOfInstances.isEmpty())
-        {
-        	sql = sql + "AND COUNT(*) ="+inputNumberOfInstances;
-        }
-        if(!inputNumberOfChars.isEmpty())
-        {
-        	sql = sql + "AND LENGTH(w.\"Word\") ="+inputNumberOfChars;
-        }
-        sql = sql +  " LIMIT "+inputMaxSize+" OFFSET "+ inputStartIndex;
+	  public ArrayList<Group> filterGroups(String inputStartIndex , String inputMaxSize,String inputGroupName , String inputNumberOfWords) 
+	    {
+		  
+	    	ArrayList<Group> tempGroups = new ArrayList<>();
+	    	ArrayList<Group> groups = new ArrayList<>();
+	    	     
+	    	String sql = " SELECT * "+
+	       		     "FROM \"Groups\" " +       			
+	       			 "WHERE \"ID\" != 0 AND \"GroupName\" ILIKE '%"+ inputGroupName + "%' "  +       		    
+	       		     "LIMIT "+inputMaxSize+" OFFSET "+ inputStartIndex;
+	        try 
+	        (
+	        	 PreparedStatement stmt = conn.prepareStatement(sql);        		
+	             ResultSet rs = stmt.executeQuery()
+	        ) 
+	        {
 
-        try 
-        (
-        	 PreparedStatement stmt = conn.prepareStatement(sql);        		
-             ResultSet rs = stmt.executeQuery()
-        ) 
-        {
+	            while (rs.next()) 
+	            {
+	            		            	
+	            	Group s = new Group(rs.getInt("ID"),rs.getString("GroupName"),0);
+	            	tempGroups.add(s);
+	            }
 
-            while (rs.next()) 
-            {
-            	//public Word(String word,String group,String songTitle,int verseNumber, int lineNumber, int placeInLine, int numberOfInstancesInSong, int numberOfInstancesInDB )
-            	
-            	Word s = new Word(0,rs.getString("Word"),rs.getString("GroupName"),"",0,0,0,0,rs.getInt("numberOfInstances"));
-            	Words.add(s);
-            }
+	        } 
+	        catch (SQLException e) 
+	        {
+	            e.printStackTrace();
+	        }
+	        
+	    	String NumberOfWordsSql = " SELECT COUNT(*) AS numberOfInstances " +
+     		     " FROM \"Words\" w " +       			        		     
+     			 "WHERE w.\"GroupId\" = ?  ";
+     		     
+     		     
+	    	
+	    	for(Group group : tempGroups)
+	    	{
+	    		try 
+		        (
+		        	 PreparedStatement NumberOfWordsStmt = conn.prepareStatement(NumberOfWordsSql);	    			 
+		        ) 
+		        {
+	    			NumberOfWordsStmt.setInt(1, group.getId() );
+		            ResultSet rs = NumberOfWordsStmt.executeQuery();
 
-        } 
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }
+		            while (rs.next()) 
+		            {
+		            	int numberofWordsInt = rs.getInt("numberOfInstances");
+		            	if(inputNumberOfWords.isEmpty() ||  Integer.valueOf(inputNumberOfWords) == numberofWordsInt)
+		            	{
+		            		group.setNumberOfWords(numberofWordsInt);
+		            		groups.add(group);
+		            	}		            	
+		            }
 
-        return Words;
-    }
+		        } 
+		        catch (SQLException e) 
+		        {
+		            e.printStackTrace();
+		        }
+
+	    	
+	    	}
+
+	        return groups;
+	    }
+	  
+	  
     
-    public int FilterWordsSize(String inputStartIndex , String inputMaxSize,String inputWord , String inputGroup,String inputNumberOfInstances,String inputNumberOfChars ) 
+    public int filterGroupsSize(String inputStartIndex , String inputMaxSize,String inputGroupName , String inputNumberOfWords) 
     {
-    	/*
-    	 * 	   String inputWord     = request.getParameter("Word");
-       String inputGroup     = request.getParameter("Group");       
-       String inputNumberOfInstances     = request.getParameter("NumberOfInstances");           
-       String inputNumberOfChars = request.getParameter("NumberOfChars");
-    	 */
-    	ArrayList<Word> Words = new ArrayList<>();
-    	String sql = "SELECT COUNT(*) FROM ( SELECT COUNT(*) " +
-        		     " FROM \"Words\" w " +
-        			 " JOIN \"Groups\" g "+
-        		     " ON w.\"GroupId\" = g.\"ID\" "+
-        			 " WHERE 1=1 ";
+    	
+    	String sql = "SELECT COUNT(*) FROM ( SELECT w.\"GroupId\" , g.\"GroupName\", COUNT(*) AS numberOfInstances " +
+   		     " FROM \"Words\" w " +
+   			 " JOIN \"Groups\" g "+
+   		     " ON w.\"GroupId\" = g.\"ID\" "+
+   		     " GROUP BY w.\"GroupId\" , g.\"GroupName\" "+
+   		     "WHERE 1=1 ";
         
-        if(!inputWord.isEmpty())
-        {
-        	sql = sql + "AND  w.\"Word\" LIKE  '%"+inputWord+ "%'";
-        }
-        
-        if(!inputGroup.isEmpty())
-        {
-        	sql = sql + "AND  g.\"GroupName\" LIKE '%"+inputGroup+ "%'";        	         	
-        }
-        
-        sql = sql + " GROUP BY g.\"GroupName\", w.\"Word\" ";
-        sql = sql + "HAVING COUNT(*) > 0 ";
-        		     
-        if(!inputNumberOfInstances.isEmpty())
-        {
-        	sql = sql + "AND COUNT(*) ="+inputNumberOfInstances;
-        }
-        if(!inputNumberOfChars.isEmpty())
-        {
-        	sql = sql + "AND LENGTH(w.\"Word\") ="+inputNumberOfChars;
-        }
+		  if(!inputGroupName.isEmpty())
+		  {
+		  	sql = sql + "AND  g.\"GroupName\" LIKE  '%"+inputGroupName+ "%'";
+		  }
+		      
+		  if(!inputNumberOfWords.isEmpty())
+		  {
+		  	sql = sql + "AND COUNT(*) ="+inputNumberOfWords;
+		  }
         
         sql = sql + ")";
 
@@ -247,15 +287,14 @@ public class WordsDAO
         return 0;
     }
     
-    public int getSongWordsSize(String SongId, String StartIndex,String maxInPage) 
+    public int getGroupWordsSize(String groupId, String StartIndex,String maxInPage) 
     {
     	ArrayList<SongWord> words = new ArrayList<SongWord>();
     	
    	 String searchSql = "SELECT COUNT(*) " +
-                "FROM \"Words\" sw " +
-                "JOIN \"Songs\" s ON sw.\"SongId\" = s.\"ID\" " +
+                "FROM \"Words\" sw " +                
                 "JOIN \"Groups\" w ON sw.\"GroupId\" = w.\"ID\" "+
-                "WHERE 1=1 AND s.\"ID\" = "+ SongId;
+                "WHERE 1=1 AND w.\"ID\" = "+ groupId;
                 
    	   	      	  
    	   try 
@@ -283,8 +322,26 @@ public class WordsDAO
     
     }
     
+    public void newGroup(String groupName)
+    {
+    	String sql = "INSERT INTO \"Groups\" (\"GroupName\") VALUES('"+groupName+"') ";
+    	 try 
+    	 {
+     	    PreparedStatement stmt = conn.prepareStatement(sql);
+            int res = stmt.executeUpdate();
+    	 }
+    	  catch (SQLException e) 
+          {
+             e.printStackTrace();
+             return ;
+          }
+    		return;
+         
+        
+    }
     
-    public ArrayList<SongWord> getSongWords(String SongId, String StartIndex,String maxInPage) 
+    
+    public ArrayList<SongWord> getGroupWords(String groupId, String StartIndex,String maxInPage) 
     {
     	ArrayList<SongWord> words = new ArrayList<SongWord>();
     	
@@ -292,12 +349,12 @@ public class WordsDAO
                  "FROM \"Words\" sw " +
                  "JOIN \"Songs\" s ON sw.\"SongId\" = s.\"ID\" " +
                  "JOIN \"Groups\" w ON sw.\"GroupId\" = w.\"ID\" "+
-                 "WHERE 1=1 AND s.\"ID\" = "+ SongId + " ";
+                 "WHERE 1=1 AND w.\"ID\" = "+ groupId + " ";
                  
     	 
     	
-    	   searchSql = searchSql + " ORDER BY sw.\"VerseNumber\" ASC, sw.\"LineNumber\" ASC, sw.\"PlaceInLine\" ";
-    	    searchSql = searchSql + " LIMIT "+maxInPage+" OFFSET "+ StartIndex;;
+    	    searchSql = searchSql + " ORDER BY sw.\"VerseNumber\" ASC, sw.\"LineNumber\" ASC, sw.\"PlaceInLine\" ";
+    	    searchSql = searchSql + " LIMIT "+maxInPage+" OFFSET "+ StartIndex;
     	   
     	   try 
            (     
@@ -332,7 +389,7 @@ public class WordsDAO
     	
     }
     
-    public SongWord getSongWord(int WordId)
+    public SongWord getGroupWord(int WordId)
     {
     	String Sql = "SELECT * FROM \"Words\"  WHERE \"ID\" = ?";
     	try (PreparedStatement sqlStmt = conn.prepareStatement(Sql))
@@ -353,7 +410,7 @@ public class WordsDAO
     	return null;
     }
     
-    public ArrayList<SongWord> filterSongWords(String SongId, String StartIndex,String maxInPage,String inputVerse) 
+    public ArrayList<SongWord> filterGroupWords(String GroupId, String StartIndex,String maxInPage,String inputVerse) 
     {
     	ArrayList<SongWord> words = new ArrayList<SongWord>();
     	
@@ -361,7 +418,7 @@ public class WordsDAO
                  "FROM \"Words\" sw " +
                  "JOIN \"Songs\" s ON sw.\"SongId\" = s.\"ID\" " +
                  "JOIN \"Groups\" w ON sw.\"GroupId\" = w.\"ID\" "+
-                 "WHERE 1=1 AND s.\"ID\" = "+ SongId + " AND sw.\"VerseNumber\" =  '" + inputVerse + "' ";;
+                 "WHERE 1=1 AND w.\"ID\" = "+ GroupId + " AND sw.\"VerseNumber\" =  '" + inputVerse + "' ";;
                  
     	 
     	
@@ -490,7 +547,7 @@ public class WordsDAO
     }
     
     
-    public ArrayList<SongWord> FilterSongWords(String inputStartIndex, String maxInPage,String inputWord,Boolean FilterWord, String inputSong, Boolean FilterSong,  String inputGroup,Boolean FilterGroup,String inputVerse,String inputLine,String inputPlaceInLine)
+    public ArrayList<SongWord> FilterGroupWords(String inputStartIndex, String maxInPage,String inputWord,Boolean FilterWord, String inputSong, Boolean FilterSong,  String inputGroup,Boolean FilterGroup,String inputVerse,String inputLine,String inputPlaceInLine)
     {
     	ArrayList<SongWord> words = new ArrayList<SongWord>();
     	
@@ -589,57 +646,4 @@ public class WordsDAO
     
      
 
-    
-    public int addWord(Word word, int songID) 
-    {
-    	String insertSql = "INSERT INTO \"Words\" (\"Word\", \"SongId\", \"GroupId\", \"VerseNumber\", \"LineNumber\", \"PlaceInLine\") VALUES (?, ?, ?, ?, ?, ?)";
-    	try (PreparedStatement insertStmt = conn.prepareStatement(insertSql,Statement.RETURN_GENERATED_KEYS))
-    	{    		    		
-    		insertStmt.setString(1,word.getWord());
-    		insertStmt.setInt(2,songID);
-    		insertStmt.setInt(3,0);    		
-    		insertStmt.setInt(4,word.getVerseNumber());   
-    		insertStmt.setInt(5,word.getLineNumber());
-    		insertStmt.setInt(6,word.getPlaceInLine());
-    		int affectedRows = insertStmt.executeUpdate();     		        
-            if(affectedRows == 1)
-            {
-            	try (ResultSet rs = insertStmt.getGeneratedKeys()) 
-            	{
-                    if (rs.next()) 
-                    {                    	 
-                    	return rs.getInt(1);
-                    }
-            	}
-            	catch (SQLException e) 
-                {
-                    e.printStackTrace();
-                    return 0;
-                }            
-            }
-    		return 0;
-    	}
-    	catch (SQLException e) 
-        {
-            e.printStackTrace();
-            return 0;
-        }  
-    }
-    
-    public void updateWordGroup(String word,int groupId)
-    {
-    	String updateSql = "UPDATE \"Words\" SET \"GroupId\" = ?  WHERE \"Word\" = ?";
-    	try (PreparedStatement updateStmt = conn.prepareStatement(updateSql))
-    	{    		    		
-    		updateStmt.setInt(1,groupId);
-    		updateStmt.setString(2,word);    		    		    		
-    		updateStmt.executeUpdate(); 
-    		return ;
-    	}
-    	catch (SQLException e) 
-        {
-            e.printStackTrace();
-            return ;
-        }  
-    }
 }

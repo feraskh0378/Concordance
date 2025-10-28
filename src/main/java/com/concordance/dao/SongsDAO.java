@@ -67,7 +67,7 @@ public class SongsDAO
         {
             while (rs.next()) 
             {
-            	Song s = new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
+            	Song s = new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getString("Date"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
             	Songs.add(s);
             }
         } 
@@ -79,7 +79,7 @@ public class SongsDAO
         return Songs;
     }
     
-    public int filterSongsSize(String inputStartIndex, String maxInPage,String inputTitle,String inputPoet,String inputComposer,String inputNumberOfVerses,String inputNumberOfLines,String inputNumberOfWords) 
+    public int filterSongsSize(String inputStartIndex, String maxInPage,String inputTitle,String inputPoet,String inputComposer,String inputDate,String inputNumberOfVerses,String inputNumberOfLines,String inputNumberOfWords) 
     {
     	ArrayList<Song> Songs = new ArrayList<>();
         String searchSql = "SELECT * FROM \"Songs\" "+
@@ -109,8 +109,25 @@ public class SongsDAO
 	 {
  		 searchSql = searchSql + "AND s.\"NumberOfWords\" = '"+ inputNumberOfWords + "'";				
 	 }
-   	   	
-   	 
+   	if(!inputDate.isEmpty())
+	 {
+		String[] parts = inputDate.split("-");
+		if(parts.length == 1)
+		{
+			searchSql = searchSql + " AND ( EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(MONTH FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(DAY FROM \"Date\") = '"+ parts[0] + "')";
+			
+		}
+		if(parts.length == 2)
+		{
+			searchSql = searchSql + " AND ( EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(MONTH FROM \"Date\") = '"+ parts[1] + "' "+"OR EXTRACT(DAY FROM \"Date\") = '"+ parts[1] + "')";
+			
+		}		
+		if(parts.length == 3)
+		{
+			searchSql = searchSql + " AND ( EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(MONTH FROM \"Date\") = '"+ parts[1] + "' "+"OR EXTRACT(DAY FROM \"Date\") = '"+ parts[2] + "')";
+			
+		}		
+	 }
         
 
         try 
@@ -134,35 +151,54 @@ public class SongsDAO
 
     
 
-    public ArrayList<Song> filterSongs(String inputStartIndex, String maxInPage,String inputTitle,String inputPoet,String inputComposer,String inputNumberOfVerses,String inputNumberOfLines,String inputNumberOfWords) 
+    public ArrayList<Song> filterSongs(String inputStartIndex, String maxInPage,String inputTitle,String inputPoet,String inputComposer,String inputDate,String inputNumberOfVerses,String inputNumberOfLines,String inputNumberOfWords) 
     {
     	ArrayList<Song> Songs = new ArrayList<>();
         String searchSql = "SELECT * FROM \"Songs\" "+
-        			 "WHERE 1=1 ";
+        			 "WHERE 1=1";
         
    	 if(!inputTitle.isEmpty())
 	 {
-   		 searchSql = searchSql + "AND \"Title\" ILIKE '%"+ inputTitle + "%'";				
+   		 searchSql = searchSql + " AND \"Title\" ILIKE '%"+ inputTitle + "%'";				
 	 }
    	 if(!inputPoet.isEmpty())
 	 {
-  		 searchSql = searchSql + "AND \"Poet\" ILIKE '%"+ inputPoet + "%'";				
+  		 searchSql = searchSql + " AND \"Poet\" ILIKE '%"+ inputPoet + "%'";				
 	 }
    	 if(!inputComposer.isEmpty())
 	 {
-  		 searchSql = searchSql + "AND \"Composer\" ILIKE '%"+ inputComposer + "%'";				
+  		 searchSql = searchSql + " AND \"Composer\" ILIKE '%"+ inputComposer + "%'";				
 	 }
    	if(!inputNumberOfVerses.isEmpty())
 	 {
-  		 searchSql = searchSql + "AND \"NumberOfVerses\" = '"+ inputNumberOfVerses + "'";				
+  		 searchSql = searchSql + " AND \"NumberOfVerses\" = '"+ inputNumberOfVerses + "'";				
 	 }
    	if(!inputNumberOfLines.isEmpty())
 	 {
-  		 searchSql = searchSql + "AND \"NumberOfLines\" = '"+ inputNumberOfLines + "'";				
+  		 searchSql = searchSql + " AND \"NumberOfLines\" = '"+ inputNumberOfLines + "'";				
 	 }
    	if(!inputNumberOfWords.isEmpty())
 	 {
- 		 searchSql = searchSql + "AND \"NumberOfWords\" = '"+ inputNumberOfWords + "'";				
+ 		 searchSql = searchSql + " AND \"NumberOfWords\" = '"+ inputNumberOfWords + "'";				
+	 }
+	if(!inputDate.isEmpty())
+	 {
+		String[] parts = inputDate.split("-");
+		if(parts.length == 1)
+		{
+			searchSql = searchSql + " AND ( EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(MONTH FROM \"Date\") = '"+ parts[0] + "' "+"OR EXTRACT(DAY FROM \"Date\") = '"+ parts[0] + "')";
+			
+		}
+		if(parts.length == 2)
+		{
+			searchSql = searchSql + " AND  EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"AND ( EXTRACT(MONTH FROM \"Date\") = '"+ parts[1] + "' "+"OR EXTRACT(DAY FROM \"Date\") = '"+ parts[1] + "')";
+			
+		}		
+		if(parts.length == 3)
+		{
+			searchSql = searchSql + " AND ( EXTRACT(YEAR FROM \"Date\") = '"+ parts[0] + "' "+"AND EXTRACT(MONTH FROM \"Date\") = '"+ parts[1] + "' "+"AND EXTRACT(DAY FROM \"Date\") = '"+ parts[2] + "')";
+			
+		}		
 	 }
    	
    	searchSql = searchSql+ " LIMIT "+maxInPage+" OFFSET "+ inputStartIndex;
@@ -177,7 +213,7 @@ public class SongsDAO
         {
             while (rs.next()) 
             {
-            	Song s = new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
+            	Song s = new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getString("Date"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
             	Songs.add(s);
             }
         } 
@@ -193,7 +229,7 @@ public class SongsDAO
     public int addSong(Song song) 
     {
     	
-        String sql = "INSERT INTO \"Songs\" (\"Title\", \"Poet\", \"Composer\", \"NumberOfVerses\",\"NumberOfLines\",\"NumberOfWords\") VALUES (?, ?, ?, ?, ? , ?)";
+        String sql = "INSERT INTO \"Songs\" (\"Title\", \"Poet\", \"Composer\", \"NumberOfVerses\",\"NumberOfLines\",\"NumberOfWords\",\"Date\") VALUES (?, ?, ?, ?, ? , ?,?)";
         try (
              PreparedStatement stmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
 
@@ -203,6 +239,7 @@ public class SongsDAO
             stmt.setInt(4, song.getNumberOfVerses());
             stmt.setInt(5, song.getNumberOfLines());
             stmt.setInt(6, song.getNumberOfWords());
+            stmt.setDate(7, Date.valueOf(song.getDate()));
             int affectedRows =   stmt.executeUpdate();
             
             if(affectedRows == 1)
@@ -261,7 +298,7 @@ public class SongsDAO
     		 ResultSet rs = sqlStmt.executeQuery(); 
     		 while (rs.next()) 
 	         {
-    			 return  new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
+    			 return  new Song(rs.getInt("ID"),rs.getString("Title"),rs.getString("Poet"),rs.getString("Composer"),rs.getString("Date"),rs.getInt("NumberOfVerses"),rs.getInt("NumberOfLines"),rs.getInt("NumberOfWords"));
 	         }
     	}
     	catch (SQLException e) 

@@ -6,7 +6,7 @@
         	{
         		
             %>         
-	        <tr onclick="ShowWordText('<%= songWord.getId() %>','<%= songWord.getWord() %>','<%= songWord.getSong() %>','<%= songWord.getVerse() %>','<%= songWord.getLine() %>','<%= songWord.getLinePlace() %>')">
+	        <tr id='<%= songWord.getId() %>' onclick="ShowWordText('<%= songWord.getId() %>',0,'TextSongsLines'); ToggleSelectedSongWord(this);">
 	            <td class="StringTd" ><%= songWord.getWord() %></td>                
 	            <td class="StringTd" ><%= songWord.getSong() %></td>
 	            <td class="IntTd"><%= songWord.getVerse() %></td>
@@ -24,7 +24,7 @@
 	        <tr>
 	        <% if(inputStartIndex != 0) { %>
       			<td colspan=3 >  		
- 		 			<button class="circle-btn" onclick="filterSongWordsTable('SongsWordsTable',<%= inputStartIndex - MaxInPage%>)">&lt;</button>
+ 		 			<button class="circle-btn" onclick="filterSongWords(<%= inputStartIndex - MaxInPage%>)">&lt;</button>
 				</td>
 			<% } else { %>
 				<td colspan=3 >  		
@@ -38,7 +38,7 @@
 						</td>
 					<% } else { %>
 					<td colspan=4>  	
-					     <button class="circle-btn" onclick="filterSongWordsTable('SongsWordsTable',<%= inputStartIndex + MaxInPage %>)">&gt;</button>
+					     <button class="circle-btn" onclick="filterSongWords(<%= inputStartIndex + MaxInPage %>)">&gt;</button>
 					     </td>
 						<% } %>
 	        </tr>	   	

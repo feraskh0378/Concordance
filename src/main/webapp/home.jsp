@@ -110,12 +110,52 @@
         td {
             border-bottom: 1px solid #ddd;
         }
+        .highlight {
+  
+  background:yellow !important;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
     </style>
      <script>
      let currentTab = 'SongsTab';
+     let SelectedSong = null;
+     let SelectedSongWord = null;
+     let SelectedWord = null;
+     let SelectedWordSong = null;
+     let SelectedGroup = null;
+     let SelectedGroupWord = null;
+     
+     
      function mySubmitFunction() {
    	  alert("Form submitted without reloading!");
    	}  
+     
      </script>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/GroupsTab.js"></script>
@@ -125,6 +165,57 @@
         
 </head>
 <body>
+<div class="modal fade" id="newGroup" tabindex="-1" aria-labelledby="uploadLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="NewGroup" method="post" enctype="multipart/form-data" id="newGroupForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addWordToGroupLabel">Choose group name</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Group Name</label> 
+            <input type="text" class="form-control" name="groupName" id="GroupName" required>
+          </div>                 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addWordToGroup" tabindex="-1" aria-labelledby="uploadLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="AddWordToGroup" method="post" enctype="multipart/form-data" id="addWordToGroupForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addWordToGroupLabel">Choose group</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Word</label> 
+            <input type="text" class="form-control" name="word" id="AddWordToGroupInput" required>
+          </div>         
+          <div class="mb-3">
+            <label class="form-label">Group</label>
+            <input list="groups" class="form-control" name="group" required>
+            <datalist id="groups">
+  				
+			</datalist>
+          </div>          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -172,7 +263,7 @@
     <button class="tablinks" onclick="openTab(event, 'PhrasesTab')">Phrases</button>
 </div>
 
- <div id="SongsTab" class="tabcontent" style="background: #e6f7ff;">
+ <div id="SongsTab" class="tabcontent" style="background: #e6f7ff; height:1000px;">
  	<table style="background: #e6f7ff;">
  		<tr>
  			<td class=tdtable>
@@ -186,33 +277,13 @@
   			</td>
  			<td class="tdtable" >
  			<div style="width:100%; height:100px;" id="TextSongsLines"  >
-	  			<table id="TextSongsTable" hidden> 
-	  			<tr> 
-	      				<td colspan="2">  		
-	  		 				Text
-						</td>	
-					</tr>
-	    			<tr style="width:100%; height:100%;"> 
-	      				<td colspan="2" >  		
-	  		 				
-						</td>	
-					</tr>
-						<tr> 
-	      				<td>  		
-	  		 			<button class="circle-btn">&lt;</button>
-						</td>	
-						<td>  		
-	  		 				<button class="circle-btn">&gt;</button>
-						</td>
-					</tr>
-				</table> 
-				ss</div>
+	  		</div>
 			</td>
   		</tr> 
   </table>
 </div>
 
-<div id="WordsTab" class="tabcontent" style="background: #e6f7ff;" >
+<div id="WordsTab" class="tabcontent" style="background: #e6f7ff; height:1000px;">
 		<table style="background: #e6f7ff;">
 		<tr>
 			 <td>
@@ -225,129 +296,37 @@
 	  		<div id="WordSongsView">
 	 			  
   				</div>	
-	  			<table id="WordSongsTable" hidden> 
-	    			<tr> 
-	      				<td colspan="6">  		
-	  					Songs have <div id="TableTitle" >Feras</div>
-						</td>	
-					</tr>
-		  			<tr>
-	            		<th>Word</th>	            		              
-	            		<th>Song</th>
-	            		<th>Verse</th>
-	            		<th>Line</th>	 
-	            		  <th>PlaceInLine</th>
-			            <th>Group</th>           		
-	        		</tr> 
-	                <tr>
-	             		<td><input type="txt" id="Word" disabled oninput="getSongWordsTable('WordSongsTable')"></td>                
-	             		<td><input type="txt" id="Song"  value=""  oninput="getSongWordsTable('WordSongsTable')"></td>
-	             		<td><input type="txt" id="Verse" oninput="getSongWordsTable('WordSongsTable')"></td>
-	             		<td><input type="txt" id="Line" oninput="getSongWordsTable('WordSongsTable')"></td>
-	             		<td><input type="txt" id="PlaceInLine" oninput="getSongWordsTable('WordSongsTable')"></td>
-			             <td><input type="txt" id="Group"  value="" oninput="getSongWordsTable('WordSongsTable')"></td>	             		            
-	         		</tr>       
-	 	 		</table> 
+	  			
 	  		</td>
 	  		<td class="tdtable" >
-	  		<div style="width:100%; height:100px;" id="TextWordsLines" hidden >
-			  			<table  id="TextWordsTable" hidden> 
-			  				<tr> 
-			      				<td colspan="2">  		
-			  		 				Text
-								</td>	
-							</tr>
-							<tr style="width:100%; height:100%;"> 
-			      				<td colspan="2" >  		
-			  		 			
-								</td>	
-							</tr>
-							<tr> 
-			      				<td>  		
-			  		 			<button class="circle-btn">&lt;</button>
-								</td>	
-								<td>  		
-			  		 				<button class="circle-btn">&gt;</button>
-								</td>
-							</tr>
-						</table> 
-					</div>
+	  		 <div style="width:100%; height:100px;" id="TextWordsLines" hidden >			  			
+			 </div>
 			</td>
 		</tr> 
 	</table>
 </div>
 
-<div id="GroupsTab" class="tabcontent" style="background: #e6f7ff;">  
+<div id="GroupsTab" class="tabcontent" style="background: #e6f7ff; height:1000px;">  
 	<table style="background: #e6f7ff;">
-		<tr >
-			 <td class="tdtable" >
-				<table id="GroupsTable" style="width:150px;"> 
-					<tr > 
-	      				<td colspan="2">  		
-	  						<div >Groups in the DataBase</div>
-						</td>	
-					</tr>
-  					<tr>
-            			<th>Group</th>            
-            			<th>Word</th>            
-        			</tr>
-        			<tr>
-             			<td><input type="txt" id="GroupGroup" oninput="getGroupsTable(1)"></td>                
-             			<td><input type="txt" id="GroupNumberOfWords"  oninput="getGroupsTable(1)"></td>                   
-         			</tr>  
-  				</table> 
-  			</td>  			
-  			<td class="tdtable" >
-  			<table id="GroupWordSongsTable" hidden> 
-	    			<tr> 
-	      				<td colspan="5">  		
-	  					Words in  <div id="TableTitle" >Feras</div>
-						</td>	
-					</tr>
-		  			<tr>
-	            		<th>Word</th>	            		              
-	            		<th>Song</th>
-	            		<th>Verse</th>
-	            		<th>Line</th>	 
-	            		  <th>Frequency</th>
-			            <th>Group</th>           		
-	        		</tr> 
-	                <tr>
-	             		<td><input type="txt" id="Word"  oninput="getSongWordsTable('GroupWordSongsTable')"></td>                
-	             		<td><input type="txt" id="Song"  value=""  oninput="getSongWordsTable('GroupWordSongsTable')"></td>
-	             		<td><input type="txt" id="Verse" oninput="getSongWordsTable('GroupWordSongsTable')"></td>
-	             		<td><input type="txt" id="Line" oninput="getSongWordsTable('GroupWordSongsTable')"></td>
-	             		<td><input type="txt" id="Frequency" oninput="getSongWordsTable('GroupWordSongsTable')"></td>
-			             <td><input type="txt" id="Group" disabled value="" oninput="getSongWordsTable('GroupWordSongsTable')"></td>	             		            
-	         		</tr>       
-	 	 		</table>   				
-  			</td>
- 			<td class="tdtable" >
- 				<div style="width:100%; height:100px;" id="TextGroupsLines"  >
-	  			<table id="TextGroupsTable" hidden> 
-	  			<tr> 
-	      				<td colspan="2">  		
-	  		 				Text
-						</td>	
-					</tr>
-	    			<tr style="width:100%; height:100%;"> 
-	      				<td colspan="2" >  		
-	  		 				<div style="width:100%; height:100px;" id="TextGroupsLines"  >ss</div>
-						</td>	
-					</tr>
-					<tr> 
-	      				<td>  		
-	  		 			<button class="circle-btn">&lt;</button>
-						</td>	
-						<td>  		
-	  		 				<button class="circle-btn">&gt;</button>
-						</td>
-					</tr>
-				</table> 
-				</div>
+		<tr>
+			 <td>
+			 	<div id="GroupsView">
+	 			  
+  				</div>	 			
+	  		</td>
+	  		<td class="tdtable" >
+	  		
+	  		<div id="GroupWordsView">
+	 			  
+  				</div>	
+	  			
+	  		</td>
+	  		<td class="tdtable" >
+	  		 <div style="width:100%; height:100px;" id="TextGroupLines" hidden >			  			
+			 </div>
 			</td>
-  		</tr> 
-  </table>
+		</tr> 
+	</table>
 </div>   
 
 
